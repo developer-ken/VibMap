@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <title>MapVGL</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map_container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+        }
+
+        #tools {
+            position: absolute;
+            z-index: 100;
+            right: 5px;
+            bottom: 5px;
+            padding: 10px;
+            color: #fff;
+            background: rgba(0, 0, 0, .5);
+        }
+
+
+        #tools button {
+            width: 100px;
+            height: 30px;
+        }
+    </style>
+    <script src="https://api.map.baidu.com/api?v=1.0&type=webgl&ak=f5ruIeDAMVk6GmQNEGXx16KvG9Xq3N6Y"></script>
+    <script src="https://mapv.baidu.com/build/mapv.min.js"></script>
+    <script src="static/common.js"></script>
+    <script src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.141/dist/mapvgl.min.js"></script>
+    <script type="text/javascript" src="//api.map.baidu.com/api?v=2.0&ak=f5ruIeDAMVk6GmQNEGXx16KvG9Xq3N6Y"></script>
+</head>
+
+<body>
+    <div id="map_container"></div>
+    <script>
+        // 6322,2363
+
+        /* global BMapGL */
+
+        /* global mapv */
+
+        /* global mapvgl */
+
+        /* global initMap */
+        var map = initMap({
+            tilt: 0,
+            heading: 0,
+            center: [106.529294, 29.603177],
+            zoom: 14,
+            style: purpleStyle
+        });
+
+        var view = new mapvgl.View({
+            map: map
+        });
+
+        var linevalue = [];
+
+        translateCallback = function (d) {
+            if (d.status === 0) {
+                map.setCenter(d.points[0]);
+                var lineLayer = new mapvgl.LineRainbowLayer({
+                    style: 'road', // road, arrow, normal
+                    width: 15,
+                    color: linevalue
+                });
+                view.addLayer(lineLayer);
+
+                var data = [{
+                    geometry: {
+                        type: 'LineString',
+                        coordinates: d.points
+                    }
+                }];
+                lineLayer.setData(data);
+            }
+        }
+
+        var convertor = new BMap.Convertor();
+        var pointArr = [];
+
+        function AddData(lat, lng, color) {
+            linevalue.push(color);
+            pointArr.push(new BMap.Point(lng, lat));
+        }
+
+        function Center(lat,lng){
+            map.setCenter(new BMap.Point(lng, lat));
+        }
+
+        function Finish() {
+            setTimeout(function () {
+                convertor.translate(pointArr, 1, 5, translateCallback);
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>
