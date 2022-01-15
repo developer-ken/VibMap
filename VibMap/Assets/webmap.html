@@ -98,10 +98,6 @@
             pointArr.push(new BMap.Point(lng, lat));
         }
 
-        function Center(lat,lng){
-            map.setCenter(new BMap.Point(lng, lat));
-        }
-
         function Finish() {
             setTimeout(function () {
                 convertor.translate(pointArr, 1, 5, translateCallback);
